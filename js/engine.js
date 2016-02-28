@@ -286,5 +286,6 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
-    global.main() = main();
+    //Put next line into comment to avoid warnings. How to use main as global to restart the game?
+    //global.main() = main();
 })(this);

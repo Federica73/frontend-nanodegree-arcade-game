@@ -72,8 +72,8 @@ var Player = function(x, y, lives) {
 };
 
 Player.prototype.update = function() {
-    this.x;
-    this.y;
+    this.x = this.x;
+    this.y = this.y;
 
 };
 
@@ -110,7 +110,8 @@ Player.prototype.handleInput = function(allowedKeys) {
                 //console.log(this.score);
                 $header.prepend(this.score);
                 if (this.score === 1200 && this.items === 2) {
-                    newGame.gameWon === true;
+                    //How to define that the game is won?
+                    //newGame.gameWon === true;
                     this.x = 202 + this.width;
                     this.y = 200;
                     alert('You have found your Valentine');
@@ -148,7 +149,9 @@ Player.prototype.collision = function() {
         this.lives = 0;
         //console.log(this.lives);
         //why it does not alert anything?
-        newGame.gameOver === true;
+        //How to define that the game is over? Put next line into comment to avoid warning
+        //Put next line into comment to avoid warning
+        //newGame.gameOver === true;
         alert('Game Over');
         alert('Press enter to start again');
     }
@@ -225,8 +228,8 @@ Orangegem.prototype.reset = function() {
 };
 
 Gem.prototype.update = function() {
-    this.x;
-    this.y;
+    this.x = this.x;
+    this.y = this.y;
 };
 
 /*In this case subclasses seem not needed
@@ -301,8 +304,8 @@ Heart.prototype.reset = function(x, y) {
 };
 
 Item.prototype.update = function(x, y) {
-    this.x;
-    this.y;
+    this.x = this.x;
+    this.y = this.y;
 };
 //Valentine object: the aim of the game
 var Valentine = function(x, y) {
