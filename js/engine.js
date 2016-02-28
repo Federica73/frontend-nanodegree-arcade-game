@@ -13,7 +13,6 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -45,9 +44,10 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
-
+        if (newGame.gameOver !== true) {
+            update(dt);
+            render();
+        }
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -69,6 +69,62 @@ var Engine = (function(global) {
         main();
     }
 
+    //Determine if player share the same location with enemy, gems and items
+    //From developer.mozilla.org: 2D collision detection non-rotating rectangles
+    function checkCollisions() {
+        //player with enemy
+        allEnemies.forEach(function(enemy) {
+            if (player.x < (enemy.x + enemy.width) && (player.x + player.width) > enemy.x && player.y < (enemy.y + enemy.height) && (player.y + player.height) > enemy.y) {
+                player.collision();
+            }
+        });
+
+        //player with gem
+        //QUESTION: why should I mention all the subclasses?How to use Gem class?
+        if (player.x < (bluGem.x + bluGem.width) && (player.x + player.width) > bluGem.x && player.y < (bluGem.y + bluGem.height) && (player.y + player.height) > bluGem.y) {
+            player.extraLives();
+            bluGem.reset();
+        }
+
+        if (player.x < (greenGem.x + greenGem.width) && (player.x + player.width) > greenGem.x && player.y < (greenGem.y + greenGem.height) && (player.y + player.height) > greenGem.y) {
+            player.extraLives();
+            greenGem.reset();
+        }
+        if (player.x < (orangeGem.x + orangeGem.width) && (player.x + player.width) > orangeGem.x && player.y < (orangeGem.y + orangeGem.height) && (player.y + player.height) > orangeGem.y) {
+            player.extraLives();
+            orangeGem.reset();
+        }
+        //player with item
+        //QUESTION: why should I mention all the subclasses? How to use Item class?
+        if (player.x < (key.x + key.width) && (player.x + player.width) > key.x && player.y < (key.y + key.height) && (player.y + player.height) > key.y) {
+            player.extraItems();
+            key.reset();
+        }
+
+        if (player.x < (heart.x + heart.width) && (player.x + player.width) > heart.x && player.y < (heart.y + heart.height) && (player.y + player.height) > heart.y) {
+            player.extraItems();
+            heart.reset();
+        }
+        //items with gems
+        if (key.x < (bluGem.x + bluGem.width) && (key.x + key.width) > bluGem.x && key.y < (bluGem.y + bluGem.height) && (key.y + key.height) > bluGem.y) {
+            key.move();
+        }
+        if (key.x < (greenGem.x + greenGem.width) && (key.x + key.width) > greenGem.x && key.y < (greenGem.y + greenGem.height) && (key.y + key.height) > greenGem.y) {
+            key.move();
+        }
+        if (key.x < (orangeGem.x + orangeGem.width) && (key.x + key.width) > orangeGem.x && key.y < (orangeGem.y + orangeGem.height) && (key.y + key.height) > orangeGem.y) {
+            key.move();
+        }
+        if (heart.x < (bluGem.x + bluGem.width) && (heart.x + heart.width) > bluGem.x && heart.y < (bluGem.y + bluGem.height) && (heart.y + heart.height) > bluGem.y) {
+            heart.move();
+        }
+        if (heart.x < (greenGem.x + greenGem.width) && (heart.x + heart.width) > greenGem.x && heart.y < (greenGem.y + greenGem.height) && (heart.y + heart.height) > greenGem.y) {
+            heart.move();
+        }
+        if (heart.x < (orangeGem.x + orangeGem.width) && (heart.x + heart.width) > orangeGem.x && heart.y < (orangeGem.y + orangeGem.height) && (heart.y + heart.height) > orangeGem.y) {
+            heart.move();
+        }
+    }
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -80,7 +136,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -95,8 +151,13 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        /*In this case it seems working not to use the subclasses, why?
+        bluGem.update();
+        greenGem.update();
+        orangeGem.update();*/
+        gem.update();
+        item.update();
     }
-
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -108,12 +169,12 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
+                'images/water-block.png', // Top row is water
+                'images/stone-block.png', // Row 1 of 3 of stone
+                'images/stone-block.png', // Row 2 of 3 of stone
+                'images/stone-block.png', // Row 3 of 3 of stone
+                'images/grass-block.png', // Row 1 of 2 of grass
+                'images/grass-block.png' // Row 2 of 2 of grass
             ],
             numRows = 6,
             numCols = 5,
@@ -152,14 +213,53 @@ var Engine = (function(global) {
         });
 
         player.render();
+        //QUESTION: why the key appears at its reset value and not random in the canvas?
+        key.render();
+
+        //Different gems appear as function of score
+        if (player.score >= 300 && player.score < 600) {
+            bluGem.render();
+        }
+
+        if (player.score >= 600 && player.score < 900) {
+            greenGem.render();
+        }
+
+        if (player.score >= 900 && player.score < 1200) {
+            orangeGem.render();
+        }
+
+        //Once player picks key, heart appears on canvas
+        if (player.items === 1) {
+            heart.render();
+        }
+        //Valentine appears when game is won, id score is 1200
+        if (player.score === 1200) {
+            valentine.render();
+        }
+
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
-     */
+    // This function handle the game reset when game over and also the reset of all variables
     function reset() {
-        // noop
+        if (newGame.gameOver !== true) {
+            player.reset();
+            bluGem.reset();
+            greenGem.reset();
+            orangeGem.reset();
+            key.reset();
+            heart.reset();
+        } else {
+            newGame.reset();
+        }
+    }
+
+    // This function move the items in case of collisions with gems. Enemies run over items and gems
+    function move() {
+        if (newGame.gameOver !== true) {
+            key.move();
+            heart.move();
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -171,13 +271,20 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/gem-blu.png',
+        'images/gem-green.png',
+        'images/gem-orange.png',
+        'images/key.png',
+        'images/heart.png'
     ]);
     Resources.onReady(init);
 
-    /* Assign the canvas' context object to the global variable (the window
+    /* Assign the canvas' context object and the main function to the global variable (the window
      * object when run in a browser) so that developers can use it more easily
      * from within their app.js files.
      */
     global.ctx = ctx;
+    global.main() = main();
 })(this);
