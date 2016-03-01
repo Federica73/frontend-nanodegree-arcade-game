@@ -1,7 +1,7 @@
 
 var speed = Math.random();
-var xStart = 202;
-var yStart = 405;
+var X_START = 202;
+var Y_START = 405;
 
 
 //Manage when player wins or loose the game
@@ -64,8 +64,8 @@ var Player = function(x, y, lives) {
     this.height = 70;
     this.width = 70;
     this.sprite = 'images/char-cat-girl.png';
-    this.x = xStart;
-    this.y = yStart;
+    this.x = X_START;
+    this.y = Y_START;
     this.lives = 3;
     this.score = 0;
     this.items = 0;
@@ -78,8 +78,8 @@ Player.prototype.update = function() {
 };
 
 Player.prototype.reset = function() {
-    this.x = xStart;
-    this.y = yStart;
+    this.x = X_START;
+    this.y = Y_START;
 };
 
 Player.prototype.handleInput = function(allowedKeys) {
@@ -148,8 +148,7 @@ Player.prototype.collision = function() {
     } else {
         this.lives = 0;
         //console.log(this.lives);
-        //why it does not alert anything?
-        //How to define that the game is over? Put next line into comment to avoid warning
+        //How to define that the game is over?
         //Put next line into comment to avoid warning
         //newGame.gameOver === true;
         alert('Game Over');
@@ -344,7 +343,8 @@ var valentine = new Valentine();
 //Start new game
 var newGame = new Game();
 
-//Score appears out of canvas
+//Score appears out of canvas:
+//QUESTION: it does not work since I do not have reference to jquery in html file?
 //$header.prepend(player.score);
 
 // This listens for key presses and sends the keys to your
