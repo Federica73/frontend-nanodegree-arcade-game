@@ -44,10 +44,8 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        if (newGame.gameOver !== true) {
-            update(dt);
-            render();
-        }
+        update(dt);
+        render();
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -64,7 +62,6 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        //reset();
         lastTime = Date.now();
         main();
     }
@@ -137,16 +134,16 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
-        updateGame();
+        checkPlayer();
     }
 
-    function updateGame () {
+    function checkPlayer () {
         if (player.score === 1200 && player.items === 2) {
-            newGame.won();
+            player.won();
         }
         //cover also the case the players has not collected both items
-        if (player.lives === 0 || (player.score === 1200 && player.items <2)) {
-            newGame.over();
+        if (player.lives === 0 || (player.score === 1200 && player.items < 2)) {
+            player.over();
         }
     }
 
@@ -238,11 +235,11 @@ var Engine = (function(global) {
             enemy.render();
         });
         //Once player picks key, heart appears on canvas
-        if (player.items === 1) {
+        if (player.items >= 1) {
             heart.render();
         }
         //Valentine appears when players has both items and a score of 1200
-        if (player.items === 2 && player.score === 1200) {
+        if (player.gameWon === true) {
             valentine.render();
         }
 
@@ -250,7 +247,7 @@ var Engine = (function(global) {
 
     // This function handle the game reset when game over and also the reset of all variables
     function reset() {
-        if (newGame.gameOver !== true) {
+        if (player.gameOver !== true) {
             player.reset();
             key.reset();
             heart.reset();
@@ -262,7 +259,7 @@ var Engine = (function(global) {
 
     // This function move the items in case of collisions with gems. Enemies run over items and gems
     function move() {
-        if (newGame.gameOver !== true) {
+        if (player.gameOver !== true) {
             key.move();
             heart.move();
         }

@@ -3,34 +3,6 @@ var speed = Math.random();
 var X_START = 202;
 var Y_START = 405;
 
-
-//Manage when player wins or loose the game
-var Game = function() {
-    this.gameOver = false;
-    this.gameWon = false;
-};
-
-Game.prototype.reset = function() {
-    player.reset();
-    player.score = 0;
-};
-
-Game.prototype.won = function() {
-    this.gameWon = true;
-    alert('You have found your Valentine');
-    player.x = 202 + player.width;
-    player.y = 200;
-    alert('Press refresh the page to restart the game');
-};
-
-Game.prototype.over = function() {
-    this.gameOver = true;
-    alert('Ops, you have not found your Valentine');
-    //make the player disappear
-    player.x = -200;
-    alert('Press refresh the page to restart the game');
-};
-
 // Enemies our player must avoid
 var Enemy = function(x, y, speed) {
     // Variables applied to each of our instances go here,
@@ -75,7 +47,7 @@ var Player = function(x, y) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.height = 83;
+    this.height = 73;
     this.width = 70;
     this.sprite = 'images/char-cat-girl.png';
     this.x = X_START;
@@ -83,6 +55,8 @@ var Player = function(x, y) {
     this.lives = 3;
     this.score = 0;
     this.items = 0;
+    this.gameOver = false;
+    this.gameWon = false;
 };
 
 Player.prototype.update = function() {
@@ -149,6 +123,20 @@ Player.prototype.extraItems = function() {
     console.log(this.items);
 };
 
+Player.prototype.won = function() {
+    this.gameWon = true;
+    this.x = 202 + this.width;
+    this.y = 200;
+    document.getElementById("myScoreDivId").innerHTML='You have found your Valentine! Please refresh the page to restart the game';
+};
+
+Player.prototype.over = function() {
+    this.gameOver = true;
+    //make the player disappear
+    this.x = -200;
+    document.getElementById("myScoreDivId").innerHTML='Ops, you have not found your Valentine...Please refresh the page to restart the game';
+;
+};
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -247,8 +235,8 @@ Key.prototype.render = function() {
 
 Key.prototype.reset = function(x, y) {
     //make the key appears left above the canvas
-    this.x = 0;
-    this.y = -83;
+    this.x = this.width;
+    this.y = -this.height;
 };
 
 var Heart = function(x, y) {
@@ -271,8 +259,8 @@ Heart.prototype.move = function(x, y) {
 
 Heart.prototype.reset = function(x, y) {
     //make the heart appear next to key
-    this.x = 101;
-    this.y = -83;
+    this.x = key.width + this.width;
+    this.y = -this.height;
 };
 
 Item.prototype.update = function(x, y) {
@@ -313,8 +301,6 @@ var heart = new Heart();
 //Place the beloved one in a variable called valentine
 var valentine = new Valentine();
 
-//Start new game
-var newGame = new Game();
 
 
 // This listens for key presses and sends the keys to your
