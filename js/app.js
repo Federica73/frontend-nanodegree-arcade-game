@@ -1,7 +1,7 @@
 
 var speed = Math.random();
 var X_START = 202;
-var Y_START = 405;
+var Y_START = 415;
 
 // Enemies our player must avoid
 var Enemy = function(x, y, speed) {
@@ -24,13 +24,13 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    /*if (this.x < ctx.canvas.width) {
+    if (this.x < ctx.canvas.width) {
         this.x += (this.speed * dt);
     } else {
         //bug enters again
         this.x = 0;
         this.x += (this.speed * dt);
-    }*/
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -47,7 +47,7 @@ var Player = function(x, y) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.height = 73;
+    this.height = 83;
     this.width = 70;
     this.sprite = 'images/char-cat-girl.png';
     this.x = X_START;
@@ -57,6 +57,7 @@ var Player = function(x, y) {
     this.items = 0;
     this.gameOver = false;
     this.gameWon = false;
+    this.water = false;
 };
 
 Player.prototype.update = function() {
@@ -69,33 +70,45 @@ Player.prototype.reset = function() {
     this.y = Y_START;
 };
 
-//Once reached the water, player is obliged to move to start position
+//Once reached the water, player can stay there as long as she likes
+//Once she press a key, she is obliged to go to the restart position
 Player.prototype.handleInput = function(allowedKeys) {
     switch (allowedKeys) {
         case 'left':
             if (this.x > this.width) {
                 this.x -= 101;
             }
+            if (this.y === 0) {
+                player.reset();
+            }
             break;
         case 'right':
             if (this.x + 101 < 505 - this.width) {
                 this.x += 101;
             }
+            if (this.y === 0){
+                player.reset();
+            }
             break;
         case 'up':
             if (this.y > this.height) {
-                console.log(this.y);
+                console.log('up prima'+this.y);
                 this.y -= 83;
-            } else {
-                console.log(this.y);
-                this.reset();
+                console.log('up dopo'+this.y);
+            } else if (this.y === this.height) {
+                this.y = 0;
                 this.score += 100;
                 document.getElementById("myScoreDivId").innerHTML=player.score;
-            }
+            } else {
+                player.reset();
+                }
             break;
         case 'down':
-            if (this.y + 83 < 498 - this.height) {
+            if (this.y < (498 - this.height) && this.y !== 0) {
                 this.y += 83;
+            }
+            if (this.y === 0){
+                player.reset();
             }
             break;
     }
@@ -236,7 +249,7 @@ Key.prototype.render = function() {
 Key.prototype.reset = function(x, y) {
     //make the key appears left above the canvas
     this.x = this.width;
-    this.y = -this.height;
+    this.y = -120;//TO DO change into -this.height;
 };
 
 var Heart = function(x, y) {
@@ -260,7 +273,7 @@ Heart.prototype.move = function(x, y) {
 Heart.prototype.reset = function(x, y) {
     //make the heart appear next to key
     this.x = key.width + this.width;
-    this.y = -this.height;
+    this.y = -120;//TO DO change into -this.height;
 };
 
 Item.prototype.update = function(x, y) {

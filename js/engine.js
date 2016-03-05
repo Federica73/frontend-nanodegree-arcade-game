@@ -155,9 +155,11 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt,score) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
+        if (player.gameWon != true) {
+            allEnemies.forEach(function(enemy) {
+                enemy.update(dt);
+            });
+        }
         /*In this case it seems working not to use the subclasses, why?
         bluGem.update();
         greenGem.update();
