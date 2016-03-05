@@ -107,11 +107,10 @@ Player.prototype.handleInput = function(allowedKeys) {
                 this.y -= 83;
             } else {
                 this.score += 100;
-                //console.log(this.score);
-                $header.prepend(this.score);
+                document.getElementById("myScoreDivId").innerHTML=player.score;
+                console.log(this.score);
                 if (this.score === 1200 && this.items === 2) {
-                    //How to define that the game is won?
-                    //newGame.gameWon === true;
+                    newGame.gameWon = true;
                     this.x = 202 + this.width;
                     this.y = 200;
                     alert('You have found your Valentine');
@@ -143,14 +142,12 @@ Player.prototype.handleInput = function(allowedKeys) {
 Player.prototype.collision = function() {
     if (this.lives > 1) {
         this.lives -= 1;
-        //console.log(this.lives);
+        console.log(this.lives);
         this.reset();
     } else {
         this.lives = 0;
-        //console.log(this.lives);
-        //How to define that the game is over?
-        //Put next line into comment to avoid warning
-        //newGame.gameOver === true;
+        console.log(this.lives);
+        newGame.gameOver = true;
         alert('Game Over');
         alert('Press enter to start again');
     }
@@ -158,12 +155,12 @@ Player.prototype.collision = function() {
 
 Player.prototype.extraLives = function() {
     this.lives += 1;
-    //console.log(this.lives);
+    console.log(this.lives);
 };
 
 Player.prototype.extraItems = function() {
     this.items += 1;
-    //console.log(this.items);
+    console.log(this.items);
 };
 
 
@@ -231,16 +228,6 @@ Gem.prototype.update = function() {
     this.y = this.y;
 };
 
-/*In this case subclasses seem not needed
-Blugem.prototype.update = function () {
-    this.y;
-}
-Greengem.prototype.update = function () {
-    this.y;
-}
-Orangegem.prototype.update = function () {
-    this.y;
-}*/
 
 //Item class
 var Item = function(x, y) {
@@ -343,9 +330,6 @@ var valentine = new Valentine();
 //Start new game
 var newGame = new Game();
 
-//Score appears out of canvas:
-//QUESTION: it does not work since I do not have reference to jquery in html file?
-//$header.prepend(player.score);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

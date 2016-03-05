@@ -64,7 +64,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        //reset();
         lastTime = Date.now();
         main();
     }
@@ -215,6 +215,8 @@ var Engine = (function(global) {
         player.render();
         //QUESTION: why the key appears at its reset value and not random in the canvas?
         key.render();
+        console.log(key.x);
+        console.log(key.y)
 
         //Different gems appear as function of score
         if (player.score >= 300 && player.score < 600) {
