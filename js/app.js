@@ -13,9 +13,23 @@ var Game = function() {
 Game.prototype.reset = function() {
     player.reset();
     player.score = 0;
-    //main();
 };
 
+Game.prototype.won = function() {
+    this.gameWon = true;
+    alert('You have found your Valentine');
+    player.x = 202 + player.width;
+    player.y = 200;
+    alert('Press refresh the page to restart the game');
+};
+
+Game.prototype.over = function() {
+    this.gameOver = true;
+    alert('Ops, you have not found your Valentine');
+    //make the player disappear
+    player.x = -200;
+    alert('Press refresh the page to restart the game');
+};
 
 // Enemies our player must avoid
 var Enemy = function(x, y, speed) {
@@ -28,7 +42,7 @@ var Enemy = function(x, y, speed) {
     this.x = 0; //start at the left end site
     this.y = y;
     this.speed = speed;
-    this.height = 70;
+    this.height = 83;
     this.width = 100;
 };
 
@@ -38,13 +52,13 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    if (this.x < ctx.canvas.width) {
+    /*if (this.x < ctx.canvas.width) {
         this.x += (this.speed * dt);
     } else {
         //bug enters again
         this.x = 0;
         this.x += (this.speed * dt);
-    }
+    }*/
 };
 
 // Draw the enemy on the screen, required method for game
@@ -55,13 +69,13 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(x, y, lives) {
+var Player = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.height = 70;
+    this.height = 83;
     this.width = 70;
     this.sprite = 'images/char-cat-girl.png';
     this.x = X_START;
@@ -74,7 +88,6 @@ var Player = function(x, y, lives) {
 Player.prototype.update = function() {
     this.x = this.x;
     this.y = this.y;
-
 };
 
 Player.prototype.reset = function() {
@@ -82,57 +95,33 @@ Player.prototype.reset = function() {
     this.y = Y_START;
 };
 
+//Once reached the water, player is obliged to move to start position
 Player.prototype.handleInput = function(allowedKeys) {
     switch (allowedKeys) {
         case 'left':
             if (this.x > this.width) {
                 this.x -= 101;
             }
-            //Once reached the water, player can stay in the water as much as she likes
-            //As soon the player wants to move, she's obliged to move to start position
-            if (this.y < this.height) {
-                this.reset();
-            }
             break;
         case 'right':
             if (this.x + 101 < 505 - this.width) {
                 this.x += 101;
             }
-            if (this.y < this.height) {
-                this.reset();
-            }
             break;
         case 'up':
             if (this.y > this.height) {
+                console.log(this.y);
                 this.y -= 83;
             } else {
+                console.log(this.y);
+                this.reset();
                 this.score += 100;
                 document.getElementById("myScoreDivId").innerHTML=player.score;
-                console.log(this.score);
-                if (this.score === 1200 && this.items === 2) {
-                    newGame.gameWon = true;
-                    this.x = 202 + this.width;
-                    this.y = 200;
-                    alert('You have found your Valentine');
-                    alert('Press enter to restart the game');
-                } else {
-                    this.reset();
-                }
             }
             break;
         case 'down':
             if (this.y + 83 < 498 - this.height) {
                 this.y += 83;
-            }
-            if (this.y < this.height) {
-                this.reset();
-            }
-            break;
-        case 'enter':
-            //QUESTION: why the game is not restarting?
-            //to prevent restart in case enter is pressed outside gameOver/gameWon
-            if (newGame.gameOver === true || newGame.gameWon === true) {
-                newGame.reset();
             }
             break;
     }
@@ -147,9 +136,6 @@ Player.prototype.collision = function() {
     } else {
         this.lives = 0;
         console.log(this.lives);
-        newGame.gameOver = true;
-        alert('Game Over');
-        alert('Press enter to start again');
     }
 };
 
@@ -295,7 +281,7 @@ Item.prototype.update = function(x, y) {
 };
 //Valentine object: the aim of the game
 var Valentine = function(x, y) {
-    this.x = 202 - this.width;
+    this.x = 202;
     this.y = 200;
     this.sprite = 'images/char-boy.png';
 };
@@ -335,7 +321,6 @@ var newGame = new Game();
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
-        13: 'enter',
         37: 'left',
         38: 'up',
         39: 'right',

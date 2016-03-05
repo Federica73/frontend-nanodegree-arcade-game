@@ -137,6 +137,17 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
+        updateGame();
+    }
+
+    function updateGame () {
+        if (player.score === 1200 && player.items === 2) {
+            newGame.won();
+        }
+        //cover also the case the players has not collected both items
+        if (player.lives === 0 || (player.score === 1200 && player.items <2)) {
+            newGame.over();
+        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -146,17 +157,17 @@ var Engine = (function(global) {
      * the data/properties related to the object. Do your drawing in your
      * render methods.
      */
-    function updateEntities(dt) {
+    function updateEntities(dt,score) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
         /*In this case it seems working not to use the subclasses, why?
         bluGem.update();
         greenGem.update();
         orangeGem.update();*/
-        gem.update();
-        item.update();
+        player.update();
+        gem.update(score);
+        item.update(score);
     }
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -205,18 +216,9 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
 
         player.render();
-        //QUESTION: why the key appears at its reset value and not random in the canvas?
         key.render();
-        console.log(key.x);
-        console.log(key.y)
 
         //Different gems appear as function of score
         if (player.score >= 300 && player.score < 600) {
@@ -230,13 +232,17 @@ var Engine = (function(global) {
         if (player.score >= 900 && player.score < 1200) {
             orangeGem.render();
         }
-
+        /* Loop through all of the objects within the allEnemies array and call
+         * the render function you have defined.*/
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
+        });
         //Once player picks key, heart appears on canvas
         if (player.items === 1) {
             heart.render();
         }
-        //Valentine appears when game is won, id score is 1200
-        if (player.score === 1200) {
+        //Valentine appears when players has both items and a score of 1200
+        if (player.items === 2 && player.score === 1200) {
             valentine.render();
         }
 
@@ -246,13 +252,11 @@ var Engine = (function(global) {
     function reset() {
         if (newGame.gameOver !== true) {
             player.reset();
+            key.reset();
+            heart.reset();
             bluGem.reset();
             greenGem.reset();
             orangeGem.reset();
-            key.reset();
-            heart.reset();
-        } else {
-            newGame.reset();
         }
     }
 
