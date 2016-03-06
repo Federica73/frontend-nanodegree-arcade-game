@@ -75,32 +75,29 @@ var Engine = (function(global) {
                 player.collision();
             }
         });
-
+        //TODO: make use of inheritance
         //player with gem
-        //QUESTION: why should I mention all the subclasses?How to use Gem class?
         if (player.x < (bluGem.x + bluGem.width) && (player.x + player.width) > bluGem.x && player.y < (bluGem.y + bluGem.height) && (player.y + player.height) > bluGem.y) {
-            player.extraLives();
             bluGem.reset();
         }
 
         if (player.x < (greenGem.x + greenGem.width) && (player.x + player.width) > greenGem.x && player.y < (greenGem.y + greenGem.height) && (player.y + player.height) > greenGem.y) {
-            player.extraLives();
             greenGem.reset();
         }
         if (player.x < (orangeGem.x + orangeGem.width) && (player.x + player.width) > orangeGem.x && player.y < (orangeGem.y + orangeGem.height) && (player.y + player.height) > orangeGem.y) {
-            player.extraLives();
             orangeGem.reset();
         }
         //player with item
-        //QUESTION: why should I mention all the subclasses? How to use Item class?
-        if (player.x < (key.x + key.width) && (player.x + player.width) > key.x && player.y < (key.y + key.height) && (player.y + player.height) > key.y) {
-            player.extraItems();
+        if (player.items < 1) {
+            if (player.x < (key.x + key.width) && (player.x + player.width) > key.x && player.y < (key.y + key.height) && (player.y + player.height) > key.y) {
             key.reset();
+            }
         }
 
-        if (player.x < (heart.x + heart.width) && (player.x + player.width) > heart.x && player.y < (heart.y + heart.height) && (player.y + player.height) > heart.y) {
-            player.extraItems();
+        if (player.items < 2) {
+            if (player.x < (heart.x + heart.width) && (player.x + player.width) > heart.x && player.y < (heart.y + heart.height) && (player.y + player.height) > heart.y) {
             heart.reset();
+            }
         }
         //items with gems
         if (key.x < (bluGem.x + bluGem.width) && (key.x + key.width) > bluGem.x && key.y < (bluGem.y + bluGem.height) && (key.y + key.height) > bluGem.y) {
@@ -215,6 +212,11 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
+        /* Loop through all of the objects within the allEnemies array and call
+         * the render function you have defined.*/
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
+        });
 
         player.render();
         key.render();
@@ -231,20 +233,15 @@ var Engine = (function(global) {
         if (player.score >= 900 && player.score < 1200) {
             orangeGem.render();
         }
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.*/
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
+
         //Once player picks key, heart appears on canvas
-        if (player.items >= 1) {
+        if (player.items >= 1 && player.score > 200) {
             heart.render();
         }
         //Valentine appears when players has both items and a score of 1200
         if (player.gameWon === true) {
             valentine.render();
         }
-
     }
 
     // This function handle the game reset when game over and also the reset of all variables
@@ -282,7 +279,9 @@ var Engine = (function(global) {
         'images/gem-green.png',
         'images/gem-orange.png',
         'images/key.png',
-        'images/heart.png'
+        'images/small_key.png',
+        'images/heart.png',
+        'images/small_heart.png'
     ]);
     Resources.onReady(init);
 

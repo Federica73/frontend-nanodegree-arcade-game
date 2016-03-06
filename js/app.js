@@ -38,15 +38,8 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+// Player class
 var Player = function(x, y) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.height = 83;
     this.width = 70;
     this.sprite = 'images/char-cat-girl.png';
@@ -57,7 +50,6 @@ var Player = function(x, y) {
     this.items = 0;
     this.gameOver = false;
     this.gameWon = false;
-    this.water = false;
 };
 
 Player.prototype.update = function() {
@@ -72,6 +64,7 @@ Player.prototype.reset = function() {
 
 //Once reached the water, player can stay there as long as she likes
 //Once she press a key, she is obliged to go to the restart position
+//505 is the canvas-width, 498 the canvas height, 101 the box width, 83 the box height
 Player.prototype.handleInput = function(allowedKeys) {
     switch (allowedKeys) {
         case 'left':
@@ -92,9 +85,7 @@ Player.prototype.handleInput = function(allowedKeys) {
             break;
         case 'up':
             if (this.y > this.height) {
-                console.log('up prima'+this.y);
                 this.y -= 83;
-                console.log('up dopo'+this.y);
             } else if (this.y === this.height) {
                 this.y = 0;
                 this.score += 100;
@@ -118,36 +109,29 @@ Player.prototype.handleInput = function(allowedKeys) {
 Player.prototype.collision = function() {
     if (this.lives > 1) {
         this.lives -= 1;
-        console.log(this.lives);
         this.reset();
     } else {
         this.lives = 0;
-        console.log(this.lives);
     }
+    document.getElementById("myLivesDivId").innerHTML=player.lives;
 };
 
-Player.prototype.extraLives = function() {
-    this.lives += 1;
-    console.log(this.lives);
-};
-
-Player.prototype.extraItems = function() {
-    this.items += 1;
-    console.log(this.items);
-};
 
 Player.prototype.won = function() {
     this.gameWon = true;
     this.x = 202 + this.width;
     this.y = 200;
-    document.getElementById("myScoreDivId").innerHTML='You have found your Valentine! Please refresh the page to restart the game';
+    allEnemies.forEach(function(enemy) {
+        enemy.sprite = 'images/heart.png';
+    });
+    document.getElementById("myResultDivId").innerHTML='You have found your Valentine! Please refresh the page to restart the game';
 };
 
 Player.prototype.over = function() {
     this.gameOver = true;
     //make the player disappear
     this.x = -200;
-    document.getElementById("myScoreDivId").innerHTML='Ops, you have not found your Valentine...Please refresh the page to restart the game';
+    document.getElementById("myResultDivId").innerHTML='Ops, you have not found your Valentine...Please refresh the page to restart the game';
 ;
 };
 
@@ -157,7 +141,7 @@ Player.prototype.render = function() {
 
 //Gem class
 var Gem = function(x, y) {
-    //the gem appear in a random position
+    //the gem appears in a random position
     this.height = 70;
     this.width = 70;
     this.x = Math.floor(Math.random() * (505 - this.width));
@@ -198,16 +182,22 @@ Orangegem.prototype.render = function() {
 Blugem.prototype.reset = function() {
     //Make the gem disappear out of the canvas
     this.y = -200;
+    player.lives += 1;
+    document.getElementById("myLivesDivId").innerHTML=player.lives;
 };
 
 Greengem.prototype.reset = function() {
     //Make the gem disappear out of the canvas
     this.y = -200;
+    player.lives += 1;
+    document.getElementById("myLivesDivId").innerHTML=player.lives;
 };
 
 Orangegem.prototype.reset = function() {
     //Make the gem disappear out of the canvas
     this.y = -200;
+    player.lives += 1;
+    document.getElementById("myLivesDivId").innerHTML=player.lives;
 };
 
 Gem.prototype.update = function() {
@@ -215,14 +205,13 @@ Gem.prototype.update = function() {
     this.y = this.y;
 };
 
-
 //Item class
 var Item = function(x, y) {
     //the item can appear in a random position, but not in water or where there is a gem
     this.height = 70;
     this.width = 70;
     this.x = Math.floor(Math.random() * (505 - this.width));
-    this.y = Math.floor(Math.random() * (498 - this.height));
+    this.y = Math.floor(Math.random() * (332 - this.height));
     if (this.y < 83) {
         this.y += 83;
     }
@@ -248,8 +237,11 @@ Key.prototype.render = function() {
 
 Key.prototype.reset = function(x, y) {
     //make the key appears left above the canvas
-    this.x = this.width;
-    this.y = -120;//TO DO change into -this.height;
+    this.x = 0;
+    this.y = -10;
+    this.sprite = 'images/small_key.png'
+    player.items += 1;
+    document.getElementById("myItemsDivId").innerHTML=player.items;
 };
 
 var Heart = function(x, y) {
@@ -272,8 +264,11 @@ Heart.prototype.move = function(x, y) {
 
 Heart.prototype.reset = function(x, y) {
     //make the heart appear next to key
-    this.x = key.width + this.width;
-    this.y = -120;//TO DO change into -this.height;
+    this.x = key.width;
+    this.y = -10;
+    this.sprite = 'images/small_heart.png';
+    player.items += 1;
+    document.getElementById("myItemsDivId").innerHTML=player.items;
 };
 
 Item.prototype.update = function(x, y) {
@@ -300,13 +295,14 @@ for (var i = 1; i < 4; i++) {
 // Place the player object in a variable called player
 var player = new Player();
 
+//TODO make use of inheritance
 // Place the gem objects in their variables called colorGem
 var gem = new Gem();
 var bluGem = new Blugem();
 var greenGem = new Greengem();
 var orangeGem = new Orangegem();
 
-//Place the item obejcts in their variables called item, key and heart
+//Place the item obejcts in their variables called item, key and heart;
 var item = new Item();
 var key = new Key();
 var heart = new Heart();
