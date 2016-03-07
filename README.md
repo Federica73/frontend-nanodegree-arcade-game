@@ -1,12 +1,13 @@
 # Valentine Arcade Game
-I have started developing this version of the Frogger Arcade Game on February, 14: so I got inspired by Valentine.
+I have started developing this version of the Frogger Arcade Game on February, 14 and got inspired by Valentine.
 
 ## Description of the Game
 The _cat char girl_ needs to find his **Valentine**. To do so she needs to reach a score of **1200** points and pick-up the **key** and the **heart** when they appear on canvas. She has **3** lives at disposal for each game.
 
 ## How to start the game
 Copy this URL link in your browser
-_to be added when game is completed_
+_http://Federica73.github.io/frontend-nanodegree-arcade-game_
+
 
 ## How to play
 * You move up, down, left and right the _cat char girl_ with the arrow keys.
