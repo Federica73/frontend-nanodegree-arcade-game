@@ -17,4 +17,5 @@ _to be added when game is completed_
 * The _cat char girl_ picks up the **key** and the **heart** colliding with them.
 
 ## Contributing
-You are welcome to spot any bug, suggest better syntax, introduce inheritance and add levels to this game.
+You are welcome to spot any bug, suggest better syntax, introduce inheritance.
+Instead of adding levels, the idea is to create customized games for every occasion (birthday, new job, holidays...) to send to friends :).
